@@ -10,6 +10,7 @@ contract Voting {
     struct Participant {
         bool voted;
         int vote;
+        // todo: this is annoying, can we do without?
         bool canVote;
     }
 
