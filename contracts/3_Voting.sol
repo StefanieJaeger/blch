@@ -103,6 +103,8 @@ contract Voting {
     function winningOption() public view
             returns (uint winningOption_)
     {
+        // todo: if multiple have same count, the first one is chosen
+        // todo: if no votes have been submitted, then first one is chosen
         uint winningVoteCount = 0;
         for (uint p = 0; p < options.length; p++) {
             if (options[p].voteCount > winningVoteCount) {
