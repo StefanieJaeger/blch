@@ -4,7 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 /** 
  * @title Voting
- * @dev Implements voting process along with vote delegation
+ * @dev Implements voting process
  */
 contract Voting {
     struct Participant {
@@ -18,8 +18,10 @@ contract Voting {
         uint voteCount;
     }
 
+    // todo: we are not doing anything with admin...
     address public admin;
 
+    // todo: should we allow to change participants later on?
     mapping(address => Participant) public participants;
 
     Option[] public options;
@@ -27,7 +29,7 @@ contract Voting {
 
     /** 
      * @dev Create a new voting, with topic 'topicName', allowing 'participantAddresses' to choose one of 'optionNames'.
-     * @param topicName topic to voteon
+     * @param topicName topic to vote on
      * @param optionNames names of options
      * @param participantAddresses addresses of participants
      */
@@ -94,7 +96,7 @@ contract Voting {
     }
 
     /** 
-     * @dev Computes the winning ption taking all previous votes into account.
+     * @dev Computes the winning option taking all previous votes into account.
      * @return winningOption_ index of winning option in the options array
      */
     function winningOption() public view
