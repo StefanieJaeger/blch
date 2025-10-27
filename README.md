@@ -10,9 +10,6 @@ And drew up a few wireframes:
 <img width="653" height="817" alt="grafik" src="https://github.com/user-attachments/assets/12f136cc-12d4-4a27-a67c-693fafdb310e" />
 <img width="653" height="403" alt="grafik" src="https://github.com/user-attachments/assets/ddfd9c3d-cf03-4e5e-9110-a75dfd918e9e" />
 
-
-
-
 We found a template on Remix, which contained a 'Ballot' smart contract.
 
 After verifying that the original one works, we went ahead and adjusted it to our needs. Removing and adding some features.
@@ -20,7 +17,9 @@ Notably we did not need a vote delegation feature but added the possibility to c
 
 We then did some light testing, ensuring the contract still works as expected.
 
+### ERC-4337
 
+We are planning on basing our account abstraction on the `SimpleAccount` from the [Notary](https://github.com/tbocek/notary-example/tree/main) example in lecture week 4.
 
 
 ## Hand-In 1: Initial Plan
