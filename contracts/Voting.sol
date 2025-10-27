@@ -10,8 +10,7 @@ contract Voting {
     struct Participant {
         bool voted;
         int vote;
-        // todo: this is annoying, can we do without?
-        bool canVote;
+        bool exists;
     }
 
     struct Option {
@@ -19,11 +18,17 @@ contract Voting {
         uint voteCount;
     }
 
-    // todo: we are not doing anything with admin...
+    // todo: we could include topic and options. But better for gassing, if we don't.
+    event VotingHasStarted(address indexed recipient);
+    // event VotingHasStarted(address indexed recipient, bytes32 topic, bytes32[] optionNames);
+    event VotingHasEnded(address indexed recipient, bytes32 topic, bytes32 winnerName);
+
     address public admin;
 
-    // todo: should we allow to change participants later on?
     mapping(address => Participant) public participants;
+    uint256 public participantsCount;
+    uint256 public votedCount;
+    bool votingHasEnded;
 
     Option[] public options;
     bytes32 public topic;
@@ -35,52 +40,8 @@ contract Voting {
      * @param participantAddresses addresses of participants
      */
     constructor(bytes32 topicName, bytes32[] memory optionNames, address[] memory participantAddresses) {
-        admin = msg.sender;
-        topic = topicName;
-
-        for (uint i = 0; i < optionNames.length; i++) {
-            options.push(Option({
-                name: optionNames[i],
-                voteCount: 0
-            }));
-        }
-
-        for (uint i = 0; i < participantAddresses.length; i++) {
-            participants[participantAddresses[i]] = Participant({
-                canVote: true,
-                voted: false,
-                vote: -1
-            });
-        }
+        configureVoting(topicName, optionNames, participantAddresses);
     }
-
-    //  /** 
-    //  * @dev Give 'voter' the right to vote on this ballot. May only be called by 'chairperson'.
-    //  * @param voter address of voter
-    //  */
-    // function giveRightToVote(address voter) external {
-    //     // If the first argument of `require` evaluates
-    //     // to 'false', execution terminates and all
-    //     // changes to the state and to Ether balances
-    //     // are reverted.
-    //     // This used to consume all gas in old EVM versions, but
-    //     // not anymore.
-    //     // It is often a good idea to use 'require' to check if
-    //     // functions are called correctly.
-    //     // As a second argument, you can also provide an
-    //     // explanation about what went wrong.
-    //     require(
-    //         msg.sender == chairperson,
-    //         "Only chairperson can give right to vote."
-    //     );
-    //     require(
-    //         !voters[voter].voted,
-    //         "The voter already voted."
-    //     );
-    //     require(voters[voter].weight == 0, "Voter already has the right to vote.");
-    //     voters[voter].weight = 1;
-    // }
-
     
     /**
      * @dev Give your vote to option 'options[option].name'.
@@ -88,23 +49,38 @@ contract Voting {
      */
     function vote(uint option) external {
         Participant storage sender = participants[msg.sender];
-        require(sender.canVote, "Has no right to vote");
+        require(!votingHasEnded, "Voting has already ended");
+        require(sender.exists, "Has no right to vote");
         require(!sender.voted, "Already voted.");
         sender.voted = true;
         sender.vote = int(option);
 
         options[option].voteCount += 1;
+        votedCount += 1;
+
+        if (participantsCount == votedCount) {
+            endVoting();
+        }
+    }
+
+    /**
+    * @dev Close the voting prematurely. Only the admin can do this.
+    */
+    function endVotingAsAdmin() external {
+        require(msg.sender == admin, "Only admin can close the vote");
+
+        endVoting();
     }
 
     /** 
      * @dev Computes the winning option taking all previous votes into account.
+     * If multiple have the same amount of votes, then the first among them is chosen as the winner.
+     * If none have any votes, then the first in the list is chosen.
      * @return winningOption_ index of winning option in the options array
      */
     function winningOption() public view
             returns (uint winningOption_)
     {
-        // todo: if multiple have same count, the first one is chosen
-        // todo: if no votes have been submitted, then first one is chosen
         uint winningVoteCount = 0;
         for (uint p = 0; p < options.length; p++) {
             if (options[p].voteCount > winningVoteCount) {
@@ -122,5 +98,37 @@ contract Voting {
             returns (bytes32 winnerName_)
     {
         winnerName_ = options[winningOption()].name;
+    }
+
+    function configureVoting(bytes32 topicName, bytes32[] memory optionNames, address[] memory participantAddresses) internal {
+        admin = msg.sender;
+        topic = topicName;
+        votedCount = 0;
+        votingHasEnded = false;
+
+        for (uint i = 0; i < optionNames.length; i++) {
+            options.push(Option({
+                name: optionNames[i],
+                voteCount: 0
+            }));
+        }
+
+        participantsCount = participantAddresses.length;
+        for (uint i = 0; i < participantAddresses.length; i++) {
+            participants[participantAddresses[i]] = Participant({
+                exists: true,
+                voted: false,
+                vote: -1
+            });
+            emit VotingHasStarted(participantAddresses[i]);
+        }
+    }
+
+    function endVoting() internal {
+        // todo: can we do something else to signal that this smart contract is "inactive"?
+        votingHasEnded = true;
+
+        // todo: do we need to fire an event for each participant on end, or is on start enough? Can Client handle that?
+        // emit VotingHasEnded(options[winningOption()].name);
     }
 }
