@@ -18,10 +18,8 @@ contract Voting {
         uint voteCount;
     }
 
-    // todo: we could include topic and options. But better for gassing, if we don't.
     event VotingHasStarted(address indexed recipient);
-    // event VotingHasStarted(address indexed recipient, bytes32 topic, bytes32[] optionNames);
-    event VotingHasEnded(address indexed recipient, bytes32 topic, bytes32 winnerName);
+    event VotingHasEnded(address indexed recipient);
 
     address public admin;
 
@@ -128,7 +126,7 @@ contract Voting {
         // todo: can we do something else to signal that this smart contract is "inactive"?
         votingHasEnded = true;
 
-        // todo: do we need to fire an event for each participant on end, or is on start enough? Can Client handle that?
-        // emit VotingHasEnded(options[winningOption()].name);
+        // We only inform the admin for now, participants should see change in the UI
+        emit VotingHasEnded(admin);
     }
 }
