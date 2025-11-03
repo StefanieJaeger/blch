@@ -1,38 +1,116 @@
-.App {
-  text-align: center;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  /* Add accessible line-height */
+  line-height: 1.5;
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+/*  Create a root stacking context */
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* ------- end reset ------ */
+
+body,
+html {
+  height: 100%;
+}
+
+div#root {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 1rem;
+
+  & > header {
+    padding-top: 0.3rem;
+    padding-bottom: 0.5rem;
+  }
+
+  main {
+    flex-grow: 1;
+    width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+
+    section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
 }
 
-.App-link {
-  color: #61dafb;
+
+header {
+  padding: 1rem 3rem;
+  background: lavender;
+  display: flex;
+  justify-content: space-between;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+footer {
+  padding: 1rem 3rem;
+  background: lavender;
+  text-align: center;
 }

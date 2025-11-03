@@ -1,6 +1,6 @@
 import { Voting } from "../types/Voting";
 
-function VotingList() {
+const VotingList = () =>{
     const votings: Voting[] = [{topic: 'Laura ist cool', options: ['Ja', 'Nein']}];
 
   return (

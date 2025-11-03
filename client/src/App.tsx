@@ -1,27 +1,35 @@
-// import React from 'react';
-// import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
-import VotingList from './VotingList/VotingList';
+import AdminPanel from './components/AdminPanel';
+import Login from './components/Login';
+import VoterPanel from './components/VoterPanel';
+import { User } from './types/User';
 
 function App() {
+  const [user, setUser] = useState<User | null>(null);
+
+  let content;
+  if (!user) {
+    content = <Login onLogin={setUser} />;
+  } else if (user.role === "admin") {
+    content = <AdminPanel />;
+  } else {
+    content = <VoterPanel />;
+  }
+
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.tsx</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-    <VotingList></VotingList>
+    <>
+      <header>
+        <span>Blockchain Voting App</span>
+        {user && <button onClick={() => setUser(null)}>Logout</button>}
+      </header>
+      <main>
+        {content}
+      </main>
+      <footer>
+        <p>this is footer</p>
+      </footer>
+    </>
   );
 }
 
