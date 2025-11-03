@@ -104,13 +104,13 @@ div#root {
 
 header {
   padding: 1rem 3rem;
-  background: lavender;
+  background: #F3F5F8;
   display: flex;
   justify-content: space-between;
 }
 
 footer {
   padding: 1rem 3rem;
-  background: lavender;
+  background: #F3F5F8;
   text-align: center;
 }

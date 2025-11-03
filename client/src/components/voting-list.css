@@ -1,0 +1,10 @@
+.voting-list {
+    display: flex;
+    gap: 2rem;
+}
+
+.voting-card {
+    padding: 1rem;
+    border-radius: 1rem;
+    background: lavender;
+}

@@ -12,9 +12,9 @@ function App() {
   if (!user) {
     content = <Login onLogin={setUser} />;
   } else if (user.role === "admin") {
-    content = <AdminPanel />;
+    content = <AdminPanel user={user} />;
   } else {
-    content = <VoterPanel />;
+    content = <VoterPanel user={user} />;
   }
 
   return (
