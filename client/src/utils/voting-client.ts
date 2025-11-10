@@ -27,14 +27,22 @@ const optionNames = ["0x6a610000000000000000000000000000000000000000000000000000
 const participantAddresses = ["0x147Acb91Cb3d8E1c1ef0cE3BfB8a056Ac6C54d99"];
 
 // TODO: TS: tell me why do we get error bc it expects 0 args???
-export async function deployVotingContract() {
-    const walletClient = await getWalletClient();
+export async function deployVotingContract(topicName: string, optionNames: string[], participantAddresses: string[]) {
+  const walletClient = await getWalletClient();
+  const encodedOptions = optionNames.map(opt => encodeBytes32String(opt.trim()));
+  
     const hash = await walletClient.deployContract({
         abi,
-        args: [topicName, optionNames, participantAddresses],
+        args: [encodeBytes32String(topicName), encodedOptions, participantAddresses],
         bytecode,
     });
     console.log('transaction hash:', hash);
 }
 
+
+// export async function read = await publicClient.readContract({
+//   address: '0x443feF264F80b853DdeD0860F4F4561252F35a8e',
+//   abi: abi,
+//   functionName: 'options',
+// })
 // end tryout deploying hardcoded contract with viem

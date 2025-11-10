@@ -18,25 +18,34 @@ type AdminPanelProps = {
 const AdminPanel = ({ user }: AdminPanelProps) => {
 
     // hardcoded deploy function for testing viem
-    const handleDeploy = async () => {
+    // const handleDeploy = async () => {
+    //     try {
+    //         if (window.ethereum) {
+    //             await window.ethereum.request({ method: 'eth_requestAccounts' });
+    //         }
+    //         await deployVotingContract();
+    //         alert("Deployment transaction sent! Check console for hash.");
+    //     } catch (err) {
+    //         alert("Deployment failed: " + (err as Error).message);
+    //     }
+    // };
+    
+    // TODO: finish implementing voting creation
+    const handleCreateVoting = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const topic = formData.get("topic") as string;
+        const options = (formData.get("options") as string).split(",").map(opt => opt.trim());
+        console.log("Creating voting:", { topic, options });
         try {
             if (window.ethereum) {
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
             }
-            await deployVotingContract();
+            await deployVotingContract(topic, options, [user.address]);
             alert("Deployment transaction sent! Check console for hash.");
         } catch (err) {
             alert("Deployment failed: " + (err as Error).message);
         }
-    };
-    
-    // TODO: finish implementing voting creation
-    const handleCreateVoting = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const topic = encodeBytes32String(formData.get("topic") as string);
-        const options = encodeBytes32String(formData.get("options") as string).split(",").map(opt => opt.trim());
-        console.log("Creating voting:", { topic, options });
     }
 
     return (
@@ -54,7 +63,8 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
                 <button type="submit">Create Voting</button>
             </form>
             {/* hardcoded deploy button for testing viem */}
-            <button onClick={handleDeploy}>Deploy hardcoded Contract</button>
+            {/* <button onClick={() => handleCreateVoting}>Deploy no longer hardcoded Contract</button> */}
+            {/* <button onClick={read}>Deploy no longer hardcoded Contract</button> */}
             <VotingList />
         </div>
     );
