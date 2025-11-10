@@ -1,3 +1,4 @@
+import { encodeBytes32String } from "ethers";
 import { User } from "../types/User";
 import { deployVotingContract } from "../utils/voting-client";
 import VotingList from "./VotingList";
@@ -33,8 +34,8 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     const handleCreateVoting = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const topic = formData.get("topic");
-        const options = formData.get("options");
+        const topic = encodeBytes32String(formData.get("topic") as string);
+        const options = encodeBytes32String(formData.get("options") as string).split(",").map(opt => opt.trim());
         console.log("Creating voting:", { topic, options });
     }
 
