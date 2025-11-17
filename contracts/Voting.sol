@@ -20,7 +20,6 @@ contract VotingContract {
 
     struct Voting {
         address admin;
-        // mapping(address => Participant) participants;
         Participant[] participants;
         uint256 participantsCount;
         uint256 votedCount;
@@ -43,11 +42,11 @@ contract VotingContract {
      */
     function createVoting(bytes32 topicName, bytes32[] memory optionNames, address[] memory participantAddresses) external {
         Voting storage voting = votings[votingsCount++];
-                voting.admin = msg.sender;
-                voting.topic = topicName;
-                voting.votedCount = 0;
-                voting.votingHasEnded = false;
-                voting.participantsCount = participantAddresses.length;
+        voting.admin = msg.sender;
+        voting.topic = topicName;
+        voting.votedCount = 0;
+        voting.votingHasEnded = false;
+        voting.participantsCount = participantAddresses.length;
 
         for (uint i = 0; i < optionNames.length; i++) {
             voting.options.push(Option({
@@ -56,7 +55,6 @@ contract VotingContract {
             }));
         }
         for (uint i = 0; i < participantAddresses.length; i++) {
-            // voting.participants[participantAddresses[i]] = Participant({
             voting.participants.push(Participant({
                 adr: participantAddresses[i],
                 voted: false,
@@ -72,7 +70,6 @@ contract VotingContract {
      * @param optionIdx index of option in the options array
      */
     function vote(uint votingIdx, uint optionIdx) external {
-        // Participant storage sender = votings[votingIdx].participants[msg.sender];
         Voting storage voting = getVoting(votingIdx);
         require(!voting.votingHasEnded, "Voting has already ended");
 
