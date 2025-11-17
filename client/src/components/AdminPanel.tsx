@@ -1,6 +1,6 @@
 import { encodeBytes32String } from "ethers";
 import { User } from "../types/User";
-import { deployVotingContract } from "../utils/voting-client";
+import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
 
 // Add this at the top of your file (e.g., AdminPanel.tsx or voting-client.ts)
@@ -41,7 +41,7 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
             if (window.ethereum) {
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
             }
-            await deployVotingContract(topic, options, [user.address]);
+            await createNewVoting(topic, options, [user.address]);
             alert("Deployment transaction sent! Check console for hash.");
         } catch (err) {
             alert("Deployment failed: " + (err as Error).message);

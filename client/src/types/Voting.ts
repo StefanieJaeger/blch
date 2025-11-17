@@ -1,5 +1,7 @@
 export type Voting = {
     topic: string;
     options: string[];
-    winnerOption?: string;
+    winnerOptionIndex?: number;
+    hasEnded: boolean;
+    ownVotedOptionsIndex?: number;
 }
