@@ -28,7 +28,7 @@ contract VotingContract {
         bytes32 topic;
     }
 
-    uint votingsCount;
+    uint public votingsCount;
     mapping(uint => Voting) votings;
 
     event VotingHasStarted(uint votingIdx, address indexed recipient);
