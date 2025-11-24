@@ -2,6 +2,7 @@ import { encodeBytes32String } from "ethers";
 import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
+import { executeSmartAccountTransaction } from "../utils/smart-account";
 
 // Add this at the top of your file (e.g., AdminPanel.tsx or voting-client.ts)
 // TODO: why is this necessary? i don't get it -.- 
@@ -48,11 +49,16 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
         }
     }
 
+    const handleCreateTrans = async () => {
+        await executeSmartAccountTransaction();
+    }
+
     return (
         <div>
             <h2>Admin Panel</h2>
             <p>You are logged in as admin.</p>
             <p>Your wallet address: {user.address}</p>
+            <button onClick={handleCreateTrans}>Create abstracted trans</button>
             {/* TODO: Voting Creation */}
             <form onSubmit={handleCreateVoting}>
                 <h3>Create New Voting</h3>

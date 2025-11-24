@@ -1,6 +1,6 @@
 import { createPublicClient, createWalletClient, custom } from 'viem'
 import { sepolia } from 'viem/chains'
-import abi from './voting-abi.json'
+import abi from './voting-smart-abi.json'
 import { encodeBytes32String, decodeBytes32String } from 'ethers';
 import { Voting } from '../types/Voting';
 
@@ -19,7 +19,7 @@ export async function getWalletClient() {
   });
 };
 
-const contractAddress = '0x9F634e21d4D1a94CFFaEEC6C61c0633A28E5ee7f';
+const contractAddress = '0xC40bE91d147c04062a38FCcEAC6f9fA4d6b5d083';
 
 export async function createNewVoting(topicName: string, optionNames: string[], participantAddresses: string[]) {
   const walletClient = await getWalletClient();
