@@ -21,7 +21,7 @@ export async function getWalletClient() {
   });
 }
 
-const contractAddress = "0x9F634e21d4D1a94CFFaEEC6C61c0633A28E5ee7f";
+const contractAddress = "0xBf59Ecf06818da4220E0D899c7B2EB84Be98EEAb";
 
 export async function createNewVoting(
   topicName: string,
@@ -66,6 +66,7 @@ export async function loadVotings(): Promise<Voting[]> {
           d.ownVotedOptionsIndex == BigInt(0)
             ? -1
             : Number(d.ownVotedOptionsIndex),
+        id: Number(d.id),
       } as Voting)
   );
 
@@ -73,6 +74,7 @@ export async function loadVotings(): Promise<Voting[]> {
 }
 
 export async function vote(votingId: number, optionId: number) {
+  console.log('vote', votingId, optionId);
   try {
     const walletClient = await getWalletClient();
     const txHash = await walletClient.writeContract({

@@ -80,6 +80,11 @@
 			{
 				"components": [
 					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
 						"internalType": "bytes32[]",
 						"name": "options",
 						"type": "bytes32[]"

@@ -1,4 +1,5 @@
 export type Voting = {
+    id: number;
     topic: string;
     options: string[];
     winnerOptionIndex?: number;
