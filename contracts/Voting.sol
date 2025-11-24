@@ -28,6 +28,7 @@ contract VotingContract {
     }
 
     struct VotingInfo {
+        uint256 id;
         bytes32[] options;
         uint winnerOptionIndex;
         bytes32 topic;
@@ -149,6 +150,7 @@ contract VotingContract {
             }
 
             VotingInfo memory info;
+            info.id = i;
             info.options = options;
             info.winnerOptionIndex = getWinningOption(i);
 
