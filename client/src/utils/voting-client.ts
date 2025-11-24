@@ -1,54 +1,91 @@
-import { createPublicClient, createWalletClient, custom } from 'viem'
-import { sepolia } from 'viem/chains'
-import abi from './voting-abi.json'
-import { encodeBytes32String, decodeBytes32String } from 'ethers';
-import { Voting } from '../types/Voting';
+import { decodeBytes32String, encodeBytes32String } from "ethers";
+import { createPublicClient, createWalletClient, custom } from "viem";
+import { sepolia } from "viem/chains";
+import { Voting } from "../types/Voting";
+import abi from "./voting-abi.json";
 
 if (!window.ethereum) throw new Error("MetaMask not found");
-export const votingClient = createPublicClient({ 
-  chain: sepolia, 
-  transport: custom(window.ethereum), 
-}) ;
+export const votingClient = createPublicClient({
+  chain: sepolia,
+  transport: custom(window.ethereum),
+});
 
 export async function getWalletClient() {
-  const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+  const accounts = await window.ethereum.request({
+    method: "eth_requestAccounts",
+  });
   return createWalletClient({
     chain: sepolia,
     transport: custom(window.ethereum),
     account: accounts[0] as `0x${string}`,
   });
-};
+}
 
-const contractAddress = '0x9F634e21d4D1a94CFFaEEC6C61c0633A28E5ee7f';
+const contractAddress = "0x9F634e21d4D1a94CFFaEEC6C61c0633A28E5ee7f";
 
-export async function createNewVoting(topicName: string, optionNames: string[], participantAddresses: string[]) {
+export async function createNewVoting(
+  topicName: string,
+  optionNames: string[],
+  participantAddresses: string[]
+) {
   const walletClient = await getWalletClient();
-  const encodedOptions = optionNames.map(opt => encodeBytes32String(opt.trim()));
+  const encodedOptions = optionNames.map((opt) =>
+    encodeBytes32String(opt.trim())
+  );
   await walletClient.writeContract({
     address: contractAddress,
     chain: sepolia,
     abi,
-    functionName: 'createVoting',
-    args: [encodeBytes32String(topicName), encodedOptions, participantAddresses],
-  })
+    functionName: "createVoting",
+    args: [
+      encodeBytes32String(topicName),
+      encodedOptions,
+      participantAddresses,
+    ],
+  });
 }
 
 export async function loadVotings(): Promise<Voting[]> {
   const data = await votingClient.readContract({
     address: contractAddress,
     abi,
-    functionName: 'getVotingInfos',
+    functionName: "getVotingInfos",
   });
 
-  console.log('data', data);
+  console.log("data", data);
 
-  const votings = (data as any[]).map(d => ({
-    topic: decodeBytes32String(d.topic),
-    options: d.options.map((o: string) => decodeBytes32String(o)),
-    winnerOptionIndex: d.winnerOptionIndex == BigInt(0) ? -1 : Number(d.winnerOptionIndex),
-    hasEnded: d.hasEnded,
-    ownVotedOptionsIndex: d.ownVotedOptionsIndex == BigInt(0) ? -1 : Number(d.ownVotedOptionsIndex),
-  }) as Voting);
+  const votings = (data as any[]).map(
+    (d) =>
+      ({
+        topic: decodeBytes32String(d.topic),
+        options: d.options.map((o: string) => decodeBytes32String(o)),
+        winnerOptionIndex:
+          d.winnerOptionIndex == BigInt(0) ? -1 : Number(d.winnerOptionIndex),
+        hasEnded: d.hasEnded,
+        ownVotedOptionsIndex:
+          d.ownVotedOptionsIndex == BigInt(0)
+            ? -1
+            : Number(d.ownVotedOptionsIndex),
+      } as Voting)
+  );
 
   return votings;
+}
+
+export async function vote(votingId: number, optionId: number) {
+  try {
+    const walletClient = await getWalletClient();
+    const txHash = await walletClient.writeContract({
+      address: contractAddress,
+      chain: sepolia,
+      abi,
+      functionName: "vote",
+      args: [votingId, optionId],
+    });
+    console.log("TxHash: ", txHash);
+    return txHash;
+  } catch (error) {
+    console.error("Voting failed: ", error);
+    throw error;
+  }
 }
