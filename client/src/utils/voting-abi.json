@@ -90,9 +90,9 @@
 						"type": "bytes32[]"
 					},
 					{
-						"internalType": "uint256",
+						"internalType": "int256",
 						"name": "winnerOptionIndex",
-						"type": "uint256"
+						"type": "int256"
 					},
 					{
 						"internalType": "bytes32",
@@ -129,9 +129,9 @@
 		"name": "getWinningOption",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "int256",
 				"name": "winningOption_",
-				"type": "uint256"
+				"type": "int256"
 			}
 		],
 		"stateMutability": "view",
