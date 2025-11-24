@@ -47,12 +47,15 @@ const VotingList = () => {
         <div className="voting-list">
           {votings
             .filter((v) => !v.hasEnded)
-            .map(voting => (
+            .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>{voting.topic}</p>
                 {voting.ownVotedOptionsIndex === -1 ? (
                   voting.options.map((option, idO) => (
-                    <button key={idO} onClick={() => handleVote(voting.id, idO)}>
+                    <button
+                      key={idO}
+                      onClick={() => handleVote(voting.id, idO)}
+                    >
                       {option}
                     </button>
                   ))
@@ -72,7 +75,7 @@ const VotingList = () => {
         <div className="voting-list">
           {votings
             .filter((v) => v.hasEnded)
-            .map(voting => (
+            .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>Enquiry: {voting.topic}</p>
                 Options:

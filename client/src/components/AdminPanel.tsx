@@ -1,10 +1,8 @@
-import { encodeBytes32String } from "ethers";
 import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
 
 // Add this at the top of your file (e.g., AdminPanel.tsx or voting-client.ts)
-// TODO: why is this necessary? i don't get it -.-
 declare global {
   interface Window {
     ethereum?: any;
@@ -16,7 +14,6 @@ type AdminPanelProps = {
 };
 
 const AdminPanel = ({ user }: AdminPanelProps) => {
-
   const handleCreateVoting = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -24,12 +21,20 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     const options = (formData.get("options") as string)
       .split(",")
       .map((opt) => opt.trim());
+    // TODO: when adding participants from inputfield, the voting gets created and
+    // immediately reads "you already voted, and for index 0". why is that??
+    // but i am too tired now
+    // const participants = (formData.get("participants") as string)
+    // .split(",")
+    // .map((part) => part.trim());
     console.log("Creating voting:", { topic, options });
+    // console.log("Creating voting:", { topic, options, participants});
     try {
       if (window.ethereum) {
         await window.ethereum.request({ method: "eth_requestAccounts" });
       }
       await createNewVoting(topic, options, [user.address]);
+      //   await createNewVoting(topic, options, participants);
       alert("Deployment transaction sent! Check console for hash.");
     } catch (err) {
       alert("Deployment failed: " + (err as Error).message);
@@ -41,18 +46,16 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
       <h2>Admin Panel</h2>
       <p>You are logged in as admin.</p>
       <p>Your wallet address: {user.address}</p>
-      {/* TODO: Voting Creation */}
       <form onSubmit={handleCreateVoting}>
         <h3>Create New Voting</h3>
         <label htmlFor="topic">Topic:</label>
         <input type="text" id="topic" name="topic" required />
         <label htmlFor="options">Options (comma separated):</label>
         <input type="text" id="options" name="options" required />
+        <label htmlFor="participants">Participants (comma separated):</label>
+        <input type="text" id="participants" name="participants" required />
         <button type="submit">Create Voting</button>
       </form>
-      {/* hardcoded deploy button for testing viem */}
-      {/* <button onClick={() => handleCreateVoting}>Deploy no longer hardcoded Contract</button> */}
-      {/* <button onClick={read}>Deploy no longer hardcoded Contract</button> */}
       <VotingList />
     </div>
   );

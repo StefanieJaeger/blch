@@ -79,7 +79,6 @@ export async function vote(votingId: number, optionId: number) {
       functionName: "vote",
       args: [votingId, optionId],
     });
-    console.log("TxHash: ", txHash);
     return txHash;
   } catch (error) {
     console.error("Voting failed: ", error);
