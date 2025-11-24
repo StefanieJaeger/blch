@@ -66,7 +66,7 @@ contract VotingContract {
                 voted: false,
                 votedOptionIdx: -1
             }));
-            emit VotingHasStarted(votingsCount, participantAddresses[i]);
+            emit VotingHasStarted(votingsCount-1, participantAddresses[i]);
         }
     }
 
@@ -79,10 +79,9 @@ contract VotingContract {
         Voting storage voting = getVoting(votingIdx);
         require(!voting.votingHasEnded, "Voting has already ended");
 
-        Participant storage sender;
         for (uint i = 0; i < voting.participants.length; i++) {
             if (voting.participants[i].adr == msg.sender) {
-                sender = voting.participants[i];
+                Participant storage sender = voting.participants[i];
 
                 require(!sender.voted, "Already voted.");
                 sender.voted = true;
@@ -134,7 +133,7 @@ contract VotingContract {
         voting.votingHasEnded = true;
 
         // We only inform the admin for now, participants should see change in the UI
-        emit VotingHasEnded(votingsCount, voting.admin);
+        emit VotingHasEnded(votingIdx, voting.admin);
     }
 
     function getVotingInfos() external view returns (VotingInfo[] memory infos) {
@@ -156,10 +155,9 @@ contract VotingContract {
             info.topic = voting.topic;
             info.hasEnded = voting.votingHasEnded;
 
-            Participant storage self;
             for (uint j = 0; j < voting.participants.length; j++) {
                 if (voting.participants[j].adr == msg.sender) {
-                    self = voting.participants[j];
+                    Participant storage self = voting.participants[j];
                     info.ownVotedOptionsIndex = self.votedOptionIdx;
                 }
             }
