@@ -59,13 +59,9 @@ export async function loadVotings(): Promise<Voting[]> {
       ({
         topic: decodeBytes32String(d.topic),
         options: d.options.map((o: string) => decodeBytes32String(o)),
-        winnerOptionIndex:
-          d.winnerOptionIndex == BigInt(0) ? -1 : Number(d.winnerOptionIndex),
+        winnerOptionIndex: d.hasEnded ? Number(d.winnerOptionIndex) : -1,
         hasEnded: d.hasEnded,
-        ownVotedOptionsIndex:
-          d.ownVotedOptionsIndex == BigInt(0)
-            ? -1
-            : Number(d.ownVotedOptionsIndex),
+        ownVotedOptionsIndex: Number(d.ownVotedOptionsIndex),
         id: Number(d.id),
       } as Voting)
   );
@@ -74,7 +70,6 @@ export async function loadVotings(): Promise<Voting[]> {
 }
 
 export async function vote(votingId: number, optionId: number) {
-  console.log('vote', votingId, optionId);
   try {
     const walletClient = await getWalletClient();
     const txHash = await walletClient.writeContract({
