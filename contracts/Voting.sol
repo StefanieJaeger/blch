@@ -33,7 +33,7 @@ contract VotingContract {
         int256 winnerOptionIndex;
         bytes32 topic;
         bool hasEnded;
-        int256 ownVotedOptionsIndex;
+        int256 ownVotedOptionIndex;
     }
 
     uint votingsCount;
@@ -80,6 +80,8 @@ contract VotingContract {
         Voting storage voting = getVoting(votingIdx);
         require(!voting.votingHasEnded, "Voting has already ended");
 
+        bool found = false;
+
         for (uint i = 0; i < voting.participants.length; i++) {
             if (voting.participants[i].adr == msg.sender) {
                 Participant storage sender = voting.participants[i];
@@ -94,8 +96,12 @@ contract VotingContract {
                 if (voting.participants.length == voting.votedCount) {
                     endVoting(votingIdx);
                 }
+
+                break;
             }
         }
+
+        require(found, "Sender is not a participant");
     }
 
     /**
@@ -121,7 +127,7 @@ contract VotingContract {
         uint winningVoteCount = 0;
         winningOption_ = -1;
         Voting storage voting = getVoting(votingIdx);
-        if (voting.votingHasEnded) {
+        if (!voting.votingHasEnded) {
             return winningOption_;
         }
         for (uint p = 0; p < voting.options.length; p++) {
@@ -134,7 +140,6 @@ contract VotingContract {
 
     function endVoting(uint votingIdx) internal {
         Voting storage voting = getVoting(votingIdx);
-        // todo: can we do something else to signal that this smart contract is "inactive"?
         voting.votingHasEnded = true;
 
         // We only inform the admin for now, participants should see change in the UI
@@ -160,12 +165,12 @@ contract VotingContract {
 
             info.topic = voting.topic;
             info.hasEnded = voting.votingHasEnded;
-            info.ownVotedOptionsIndex = -1;
+            info.ownVotedOptionIndex = -1;
 
             for (uint j = 0; j < voting.participants.length; j++) {
                 if (voting.participants[j].adr == msg.sender) {
                     Participant storage self = voting.participants[j];
-                    info.ownVotedOptionsIndex = self.votedOptionIdx;
+                    info.ownVotedOptionIndex = self.votedOptionIdx;
                 }
             }
 
