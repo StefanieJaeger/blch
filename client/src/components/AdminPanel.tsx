@@ -20,21 +20,15 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     const options = (formData.get("options") as string)
       .split(",")
       .map((opt) => opt.trim());
-    // TODO: when adding participants from inputfield, the voting gets created and
-    // immediately reads "you already voted, and for index 0". why is that??
-    // but i am too tired now
     const participants = (formData.get("participants") as string)
       .split(",")
       .map((part) => part.trim());
-    // console.log("Creating voting:", { topic, options });
     console.log("Creating voting:", { topic, options, participants});
     try {
       if (window.ethereum) {
         await window.ethereum.request({ method: "eth_requestAccounts" });
       }
-      //await createNewVoting(topic, options, [user.address]);
-        await createNewVoting(topic, options, participants);
-        
+      await createNewVoting(topic, options, participants);
       alert("Deployment transaction sent! Processing can take a while. Please click reload button in a couple of seconds or go get a coffee and do it then :)");
     } catch (err) {
       alert("Deployment failed: " + (err as Error).message);
