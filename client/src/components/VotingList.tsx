@@ -59,11 +59,17 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
             .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>{voting.topic}</p>
+                {!voting.isParticipant && (
+                  <p className="info">
+                    You are not a participant and therefore can't vote.
+                  </p>
+                )}
                 {voting.ownVotedOptionIndex === -1 ? (
                   voting.options.map((option, idO) => (
                     <button
                       key={idO}
                       onClick={() => handleVote(voting.id, idO)}
+                      disabled={!voting.isParticipant}
                     >
                       {option}
                     </button>
@@ -88,6 +94,9 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
             .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>Enquiry: {voting.topic}</p>
+                {!voting.isParticipant && (
+                  <p className="info">You were not a participant.</p>
+                )}
                 Options:
                 <br />
                 <ol>
@@ -96,6 +105,9 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
                     return (
                       <li key={idO} className={`${hasWon ? "li--bold" : ""}`}>
                         {hasWon ? <>WINNER: {option}</> : <>{option}</>}
+                        {voting.ownVotedOptionIndex === idO && (
+                          <span> (your vote)</span>
+                        )}
                       </li>
                     );
                   })}
