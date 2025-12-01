@@ -85,6 +85,7 @@ contract VotingContract {
         for (uint i = 0; i < voting.participants.length; i++) {
             if (voting.participants[i].adr == msg.sender) {
                 Participant storage sender = voting.participants[i];
+                found = true;
 
                 require(!sender.voted, "Already voted.");
                 sender.voted = true;
