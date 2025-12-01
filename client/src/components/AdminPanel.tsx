@@ -2,6 +2,7 @@ import { useState } from "react";
 import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
+import { executeSmartAccountTransaction } from "../utils/account-abstraction";
 
 declare global {
   interface Window {
