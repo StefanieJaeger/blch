@@ -67,7 +67,7 @@ const VotingList = ({user}: VotingListProps) => {
                 ) : (
                   <div>
                     <p>You already voted. Your vote:</p>
-                    <p>{voting.options[0]}</p>
+                    <p>{voting.options[voting.ownVotedOptionIndex as number]}</p>
                   </div>
                 )}
               </div>
