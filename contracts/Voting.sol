@@ -21,11 +21,19 @@ contract VotingContract {
     struct Voting {
         address admin;
         Participant[] participants;
-        uint256 participantsCount;
         uint256 votedCount;
         bool votingHasEnded;
         Option[] options;
         bytes32 topic;
+    }
+
+    struct VotingInfo {
+        uint256 id;
+        bytes32[] options;
+        int256 winnerOptionIndex;
+        bytes32 topic;
+        bool hasEnded;
+        int256 ownVotedOptionIndex;
     }
 
     uint votingsCount;
@@ -46,7 +54,6 @@ contract VotingContract {
         voting.topic = topicName;
         voting.votedCount = 0;
         voting.votingHasEnded = false;
-        voting.participantsCount = participantAddresses.length;
 
         for (uint i = 0; i < optionNames.length; i++) {
             voting.options.push(Option({
@@ -60,7 +67,7 @@ contract VotingContract {
                 voted: false,
                 votedOptionIdx: -1
             }));
-            emit VotingHasStarted(votingsCount, participantAddresses[i]);
+            emit VotingHasStarted(votingsCount-1, participantAddresses[i]);
         }
     }
 
@@ -73,10 +80,12 @@ contract VotingContract {
         Voting storage voting = getVoting(votingIdx);
         require(!voting.votingHasEnded, "Voting has already ended");
 
-        Participant storage sender;
+        bool found = false;
+
         for (uint i = 0; i < voting.participants.length; i++) {
             if (voting.participants[i].adr == msg.sender) {
-                sender = voting.participants[i];
+                Participant storage sender = voting.participants[i];
+                found = true;
 
                 require(!sender.voted, "Already voted.");
                 sender.voted = true;
@@ -85,11 +94,15 @@ contract VotingContract {
                 voting.options[optionIdx].voteCount += 1;
                 voting.votedCount += 1;
 
-                if (voting.participantsCount == voting.votedCount) {
+                if (voting.participants.length == voting.votedCount) {
                     endVoting(votingIdx);
                 }
+
+                break;
             }
         }
+
+        require(found, "Sender is not a participant");
     }
 
     /**
@@ -110,25 +123,60 @@ contract VotingContract {
      * @return winningOption_ index of winning option in the options array
      */
     function getWinningOption(uint votingIdx) public view
-            returns (uint winningOption_)
+            returns (int256 winningOption_)
     {
         uint winningVoteCount = 0;
+        winningOption_ = -1;
         Voting storage voting = getVoting(votingIdx);
+        if (!voting.votingHasEnded) {
+            return winningOption_;
+        }
         for (uint p = 0; p < voting.options.length; p++) {
             if (voting.options[p].voteCount > winningVoteCount) {
                 winningVoteCount = voting.options[p].voteCount;
-                winningOption_ = p;
+                winningOption_ = int256(p);
             }
         }
     }
 
     function endVoting(uint votingIdx) internal {
         Voting storage voting = getVoting(votingIdx);
-        // todo: can we do something else to signal that this smart contract is "inactive"?
         voting.votingHasEnded = true;
 
         // We only inform the admin for now, participants should see change in the UI
-        emit VotingHasEnded(votingsCount, voting.admin);
+        emit VotingHasEnded(votingIdx, voting.admin);
+    }
+
+    function getVotingInfos() external view returns (VotingInfo[] memory infos) {
+        infos = new VotingInfo[](votingsCount);
+
+        for (uint256 i = 0; i < votingsCount; i++) {
+            Voting storage voting = getVoting(i);
+
+            uint256 oLen = voting.options.length;
+            bytes32[] memory options = new bytes32[](oLen);
+            for (uint256 k = 0; k < oLen; k++) {
+                options[k] = voting.options[k].name;
+            }
+
+            VotingInfo memory info;
+            info.id = i;
+            info.options = options;
+            info.winnerOptionIndex = getWinningOption(i);
+
+            info.topic = voting.topic;
+            info.hasEnded = voting.votingHasEnded;
+            info.ownVotedOptionIndex = -1;
+
+            for (uint j = 0; j < voting.participants.length; j++) {
+                if (voting.participants[j].adr == msg.sender) {
+                    Participant storage self = voting.participants[j];
+                    info.ownVotedOptionIndex = self.votedOptionIdx;
+                }
+            }
+
+            infos[i] = info;
+        }
     }
 
     function getVoting(uint votingIdx) internal view returns (Voting storage voting) {
