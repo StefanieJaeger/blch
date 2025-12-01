@@ -2,7 +2,7 @@ import { useState } from "react";
 import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
-import { executeSmartAccountTransaction } from "../utils/voting-smart-client";
+import { executeSmartAccountTransaction } from "../utils/account-abstraction";
 
 declare global {
   interface Window {
@@ -45,17 +45,11 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     }
   };
 
-  const handleCreateTrans = async () => {
-    // TODO mp not sure if the args are given in the right format
-    await executeSmartAccountTransaction("vote", [0, 0]);
-  };
-
   return (
     <div>
       <h2>Admin Panel</h2>
       <p>You are logged in as admin.</p>
       <p>Your wallet address: {user.address}</p>
-      <button onClick={handleCreateTrans}>Create abstracted trans</button>
       <form onSubmit={handleCreateVoting}>
         <h3>Create New Voting</h3>
         <label htmlFor="topic">Topic:</label>
