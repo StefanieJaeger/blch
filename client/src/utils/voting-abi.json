@@ -1,0 +1,158 @@
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			}
+		],
+		"name": "VotingHasEnded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			}
+		],
+		"name": "VotingHasStarted",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "topicName",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "optionNames",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "participantAddresses",
+				"type": "address[]"
+			}
+		],
+		"name": "createVoting",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			}
+		],
+		"name": "endVotingAsAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getVotingInfos",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32[]",
+						"name": "options",
+						"type": "bytes32[]"
+					},
+					{
+						"internalType": "int256",
+						"name": "winnerOptionIndex",
+						"type": "int256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "topic",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasEnded",
+						"type": "bool"
+					},
+					{
+						"internalType": "int256",
+						"name": "ownVotedOptionIndex",
+						"type": "int256"
+					}
+				],
+				"internalType": "struct VotingContract.VotingInfo[]",
+				"name": "infos",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			}
+		],
+		"name": "getWinningOption",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "winningOption_",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "optionIdx",
+				"type": "uint256"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

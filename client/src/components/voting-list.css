@@ -1,0 +1,17 @@
+.voting-list {
+  display: flex;
+  gap: 2rem;
+}
+
+.voting-card {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: lavender;
+}
+
+.li--bold {
+  font-weight: bold;
+  ::marker {
+    font-weight: bold;
+  }
+}
