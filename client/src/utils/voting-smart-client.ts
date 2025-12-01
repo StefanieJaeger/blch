@@ -12,7 +12,7 @@ import abi from "./voting-smart-abi.json";
 const PIMLICO_ENTRYPOINT_ADDRESS = "0x0000000071727De22E5E9d8BAf0edAc6f37da032";
 const BUNDLER_URL = `https://public.pimlico.io/v2/${sepolia.id}/rpc`;
 
-const CONTRACT_ADDRESS = "0x832A0a86A14c96b5b283c3396320C49562F09DCf";
+const CONTRACT_ADDRESS = "0x4DCe19e5E2a70663cb0464BC092fCBDa67bD21c5";
 
 async function getWalletClient() {
   const accounts = await window.ethereum.request({

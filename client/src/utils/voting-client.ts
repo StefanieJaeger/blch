@@ -22,7 +22,7 @@ export async function getWalletClient() {
   });
 }
 
-const CONTRACT_ADDRESS = "0x832A0a86A14c96b5b283c3396320C49562F09DCf";
+const CONTRACT_ADDRESS = "0x4DCe19e5E2a70663cb0464BC092fCBDa67bD21c5";
 
 export async function createNewVoting(
   topicName: string,
