@@ -1,5 +1,59 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "topicName",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "optionNames",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "address[]",
+				"name": "participantAddresses",
+				"type": "address[]"
+			}
+		],
+		"name": "createVoting",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			}
+		],
+		"name": "endVotingAsAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "votingIdx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "optionIdx",
+				"type": "uint256"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -38,42 +92,6 @@
 		"type": "event"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "topicName",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "bytes32[]",
-				"name": "optionNames",
-				"type": "bytes32[]"
-			},
-			{
-				"internalType": "address[]",
-				"name": "participantAddresses",
-				"type": "address[]"
-			}
-		],
-		"name": "createVoting",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "votingIdx",
-				"type": "uint256"
-			}
-		],
-		"name": "endVotingAsAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "getVotingInfos",
 		"outputs": [
@@ -108,6 +126,11 @@
 						"internalType": "int256",
 						"name": "ownVotedOptionIndex",
 						"type": "int256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isParticipant",
+						"type": "bool"
 					}
 				],
 				"internalType": "struct VotingContract.VotingInfo[]",
@@ -135,24 +158,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "votingIdx",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "optionIdx",
-				"type": "uint256"
-			}
-		],
-		"name": "vote",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]
