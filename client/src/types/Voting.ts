@@ -4,5 +4,5 @@ export type Voting = {
     options: string[];
     winnerOptionIndex?: number;
     hasEnded: boolean;
-    ownVotedOptionsIndex?: number;
+    ownVotedOptionIndex?: number;
 }

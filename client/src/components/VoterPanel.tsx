@@ -11,7 +11,7 @@ const VoterPanel = ({ user }: VoterPanelProps) => {
             <h2>Voter Panel</h2>
             <p>You are logged in as a voter.</p>
             <p>Your address: {user.address}</p>
-            <VotingList />
+            <VotingList user={user} />
         </div>
     );
 };

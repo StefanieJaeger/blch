@@ -2,7 +2,6 @@ import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
 
-// Add this at the top of your file (e.g., AdminPanel.tsx or voting-client.ts)
 declare global {
   interface Window {
     ethereum?: any;
@@ -40,6 +39,11 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     } catch (err) {
       alert("Deployment failed: " + (err as Error).message);
     }
+
+    // todo: clear inputs
+
+    // todo: wait a moment, then force VotingList to reload
+    
   };
 
   return (
@@ -57,7 +61,7 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
         <input type="text" id="participants" name="participants" required />
         <button type="submit">Create Voting</button>
       </form>
-      <VotingList />
+      <VotingList user={user} />
     </div>
   );
 };

@@ -1,8 +1,9 @@
 import { decodeBytes32String, encodeBytes32String } from "ethers";
-import { createPublicClient, createWalletClient, custom } from "viem";
+import { Address, createPublicClient, createWalletClient, custom } from "viem";
 import { sepolia } from "viem/chains";
 import { Voting } from "../types/Voting";
 import abi from "./voting-abi.json";
+import { User } from "../types/User";
 
 if (!window.ethereum) throw new Error("MetaMask not found");
 export const votingClient = createPublicClient({
@@ -21,7 +22,7 @@ export async function getWalletClient() {
   });
 }
 
-const contractAddress = "0x0001DdEc3baBdC64a05e9604ef7C105C4b814e8a";
+const contractAddress = "0x8bE31824C51777A44020ec4eCd0A9702a6a725ed";
 
 export async function createNewVoting(
   topicName: string,
@@ -45,11 +46,12 @@ export async function createNewVoting(
   });
 }
 
-export async function loadVotings(): Promise<Voting[]> {
+export async function loadVotings(user: User): Promise<Voting[]> {
   const data = await votingClient.readContract({
     address: contractAddress,
     abi,
     functionName: "getVotingInfos",
+    account: <Address>user.address
   });
 
   console.log("data", data);
@@ -61,7 +63,7 @@ export async function loadVotings(): Promise<Voting[]> {
         options: d.options.map((o: string) => decodeBytes32String(o)),
         winnerOptionIndex: Number(d.winnerOptionIndex),
         hasEnded: d.hasEnded,
-        ownVotedOptionsIndex: Number(d.ownVotedOptionsIndex),
+        ownVotedOptionIndex: Number(d.ownVotedOptionIndex),
         id: Number(d.id),
       } as Voting)
   );

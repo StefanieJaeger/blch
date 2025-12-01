@@ -2,19 +2,24 @@ import { useEffect, useState } from "react";
 import { Voting } from "../types/Voting";
 import { loadVotings, vote } from "../utils/voting-client";
 import "./voting-list.css";
+import { User } from "../types/User";
 
-// TODO: voting type according to votingcontract
 declare global {
   interface Window {
     ethereum?: any;
   }
 }
-const VotingList = () => {
+
+type VotingListProps = {
+  user: User;
+};
+
+const VotingList = ({user}: VotingListProps) => {
   const [votings, setVotings] = useState<Voting[]>([]);
 
   const loadData = async () => {
     try {
-      const votings = await loadVotings();
+      const votings = await loadVotings(user);
       console.log("votings", votings);
       setVotings(votings);
     } catch (err) {
@@ -41,16 +46,16 @@ const VotingList = () => {
   return (
     // TODO: add sick stylings
     <section className="votings">
+      <button onClick={loadData}>Load</button>
       <div className="votings--active">
         <h3>Open Votings</h3>
-        <button onClick={loadData}>Load</button>
         <div className="voting-list">
           {votings
             .filter((v) => !v.hasEnded)
             .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>{voting.topic}</p>
-                {voting.ownVotedOptionsIndex === -1 ? (
+                {voting.ownVotedOptionIndex === -1 ? (
                   voting.options.map((option, idO) => (
                     <button
                       key={idO}
@@ -71,7 +76,6 @@ const VotingList = () => {
       </div>
       <div className="votings--ended">
         <h3>Closed Votings</h3>
-        {/* TODO: Add number of votes for each answer */}
         <div className="voting-list">
           {votings
             .filter((v) => v.hasEnded)
@@ -82,7 +86,6 @@ const VotingList = () => {
                 <br />
                 <ol>
                   {voting.options.map((option, idO) => {
-                    console.log(idO);
                     const hasWon = idO === voting.winnerOptionIndex;
                     return (
                       <li key={idO} className={`${hasWon ? "li--bold" : ""}`}>

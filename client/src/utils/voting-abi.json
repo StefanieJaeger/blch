@@ -106,7 +106,7 @@
 					},
 					{
 						"internalType": "int256",
-						"name": "ownVotedOptionsIndex",
+						"name": "ownVotedOptionIndex",
 						"type": "int256"
 					}
 				],
