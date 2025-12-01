@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import { User } from "../types/User";
 import { Voting } from "../types/Voting";
 import { loadVotings, vote } from "../utils/voting-client";
 import "./voting-list.css";
-import { User } from "../types/User";
 
 declare global {
   interface Window {
@@ -12,11 +12,15 @@ declare global {
 
 type VotingListProps = {
   user: User;
+  refreshKey: number;
 };
 
-const VotingList = ({user}: VotingListProps) => {
+const VotingList = ({ user, refreshKey }: VotingListProps) => {
   const [votings, setVotings] = useState<Voting[]>([]);
 
+  useEffect(() => {
+    setTimeout(() => loadData(), 25000);
+  }, [refreshKey]);
   const loadData = async () => {
     try {
       const votings = await loadVotings(user);
@@ -67,7 +71,9 @@ const VotingList = ({user}: VotingListProps) => {
                 ) : (
                   <div>
                     <p>You already voted. Your vote:</p>
-                    <p>{voting.options[voting.ownVotedOptionIndex as number]}</p>
+                    <p>
+                      {voting.options[voting.ownVotedOptionIndex as number]}
+                    </p>
                   </div>
                 )}
               </div>

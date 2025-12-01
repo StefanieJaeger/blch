@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
@@ -13,6 +14,8 @@ type AdminPanelProps = {
 };
 
 const AdminPanel = ({ user }: AdminPanelProps) => {
+  const [votingRefreshKey, setVotingRefreshKey] = useState<number>(0);
+
   const handleCreateVoting = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -23,21 +26,22 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     const participants = (formData.get("participants") as string)
       .split(",")
       .map((part) => part.trim());
-    console.log("Creating voting:", { topic, options, participants});
+    console.log("Creating voting:", { topic, options, participants });
     try {
       if (window.ethereum) {
         await window.ethereum.request({ method: "eth_requestAccounts" });
       }
       await createNewVoting(topic, options, participants);
-      alert("Deployment transaction sent! Processing can take a while. Please click reload button in a couple of seconds or go get a coffee and do it then :)");
+      alert(
+        "Deployment transaction sent! Processing can take a while. Please click reload button in a couple of seconds or go get a coffee and do it then :)"
+      );
+      (document.getElementById("topic") as HTMLInputElement).value = "";
+      (document.getElementById("options") as HTMLInputElement).value = "";
+      (document.getElementById("participants") as HTMLInputElement).value = "";
+      setVotingRefreshKey((prev) => prev + 1);
     } catch (err) {
       alert("Deployment failed: " + (err as Error).message);
     }
-
-    // todo: clear inputs
-
-    // todo: wait a moment, then force VotingList to reload
-    
   };
 
   return (
@@ -55,7 +59,7 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
         <input type="text" id="participants" name="participants" required />
         <button type="submit">Create Voting</button>
       </form>
-      <VotingList user={user} />
+      <VotingList user={user} refreshKey={votingRefreshKey} />
     </div>
   );
 };
