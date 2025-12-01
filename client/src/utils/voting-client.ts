@@ -22,7 +22,7 @@ export async function getWalletClient() {
   });
 }
 
-const contractAddress = "0x8bE31824C51777A44020ec4eCd0A9702a6a725ed";
+const CONTRACT_ADDRESS = "0x832A0a86A14c96b5b283c3396320C49562F09DCf";
 
 export async function createNewVoting(
   topicName: string,
@@ -34,7 +34,7 @@ export async function createNewVoting(
     encodeBytes32String(opt.trim())
   );
   await walletClient.writeContract({
-    address: contractAddress,
+    address: CONTRACT_ADDRESS,
     chain: sepolia,
     abi,
     functionName: "createVoting",
@@ -48,10 +48,10 @@ export async function createNewVoting(
 
 export async function loadVotings(user: User): Promise<Voting[]> {
   const data = await votingClient.readContract({
-    address: contractAddress,
+    address: CONTRACT_ADDRESS,
     abi,
     functionName: "getVotingInfos",
-    account: <Address>user.address
+    account: <Address>user.address,
   });
 
   console.log("data", data);
@@ -75,7 +75,7 @@ export async function vote(votingId: number, optionId: number) {
   try {
     const walletClient = await getWalletClient();
     const txHash = await walletClient.writeContract({
-      address: contractAddress,
+      address: CONTRACT_ADDRESS,
       chain: sepolia,
       abi,
       functionName: "vote",

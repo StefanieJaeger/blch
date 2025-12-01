@@ -25,10 +25,10 @@ async function getWalletClient() {
   });
 }
 
-export async function executeSmartAccountTransaction() {
-//   eoaAddress,
-//   functionName,
-//   args
+export async function executeSmartAccountTransaction(
+  functionName: string,
+  args: any[]
+) {
   const publicClient = createPublicClient({
     chain: sepolia,
     transport: custom(window.ethereum),
@@ -56,84 +56,114 @@ export async function executeSmartAccountTransaction() {
   console.log(nonce);
 
   // Build call data
-  //   const targetCallData = encodeFunctionData({
-  //     abi: targetAbi,
-  //     functionName,
-  //     args,
-  //   });
-  //   const callData = encodeFunctionData({
-  //     abi: SMART_ACCOUNT_ABI,
-  //     functionName: "execute",
-  //     args: [targetContract, 0n, targetCallData],
-  //   });
+  const targetCallData = encodeFunctionData({
+    abi: abi,
+    functionName,
+    args,
+  });
+  const callData = encodeFunctionData({
+    abi: abi,
+    functionName: "execute",
+    args: [CONTRACT_ADDRESS, 0, targetCallData],
+  });
 
-  //   // Get gas prices
-  //   const feeHistory = await wallet.getFeeHistory("0x1", [50]);
-  //   const baseFee = BigInt(feeHistory.baseFeePerGas[0]);
-  //   const priorityFee = BigInt(feeHistory.reward[0][0]);
+  // Get gas prices
+  // const feeHistory = await wallet.getFeeHistory("0x1", [50]);
+  // const baseFee = BigInt(feeHistory.baseFeePerGas[0]);
+  // const priorityFee = BigInt(feeHistory.reward[0][0]);
 
-  //   const minPriorityFee = 100000000n;
-  //   const minMaxFee = 100000025n;
+  // const minPriorityFee = 100000000n;
+  // const minMaxFee = 100000025n;
 
-  //   const actualPriorityFee =
-  //     priorityFee > minPriorityFee ? priorityFee : minPriorityFee;
-  //   const actualMaxFee =
-  //     baseFee + actualPriorityFee > minMaxFee
-  //       ? baseFee + actualPriorityFee
-  //       : minMaxFee;
+  // const actualPriorityFee =
+  //   priorityFee > minPriorityFee ? priorityFee : minPriorityFee;
+  // const actualMaxFee =
+  //   baseFee + actualPriorityFee > minMaxFee
+  //     ? baseFee + actualPriorityFee
+  //     : minMaxFee;
 
-  //   const chainId = await wallet.getChainId();
+  console.log(`account: ${walletClient.account.address}`);
 
-  //   // Calculate UserOperation hash
-  //   const userOpHash = getUserOperationHash({
-  //     chainId: Number(chainId),
-  //     entryPointAddress: ENTRYPOINT_ADDRESS,
-  //     entryPointVersion: "0.7",
-  //     userOperation: {
-  //       sender: smartAccountAddress,
-  //       nonce: BigInt(nonce),
-  //       callData: callData,
-  //       callGasLimit: BigInt("0x70000"),
-  //       verificationGasLimit: BigInt("0x20000"),
-  //       preVerificationGas: BigInt("0x10000"),
-  //       maxFeePerGas: BigInt(actualMaxFee),
-  //       maxPriorityFeePerGas: BigInt(actualPriorityFee),
-  //     },
-  //   });
+  const gasPrices = await getPimlicoGasPrices();
 
-  //   // Sign with EOA
-  //   const signature = await wallet.personalSign(userOpHash, eoaAddress);
+  // Calculate UserOperation hash
+  const userOpHash = getUserOperationHash({
+    chainId: sepolia.id,
+    entryPointAddress: PIMLICO_ENTRYPOINT_ADDRESS,
+    entryPointVersion: "0.7",
+    userOperation: {
+      // TODO mp unsure if the address is the correct one
+      sender: CONTRACT_ADDRESS,
+      // TODO mp this is incorrect!!!!!!
+      signature: "0x",
+      nonce: BigInt(nonce),
+      callData: callData,
+      callGasLimit: BigInt("0x70000"),
+      verificationGasLimit: BigInt("0x20000"),
+      preVerificationGas: BigInt("0x10000"),
+      maxFeePerGas: gasPrices.maxFeePerGas,
+      maxPriorityFeePerGas: gasPrices.maxPriorityFeePerGas,
+    },
+  });
 
-  //   // Build UserOperation
-  //   const userOp = {
-  //     sender: smartAccountAddress,
-  //     nonce: "0x" + nonce.toString(16),
-  //     callData: callData,
-  //     callGasLimit: "0x70000",
-  //     verificationGasLimit: "0x20000",
-  //     preVerificationGas: "0x10000",
-  //     maxFeePerGas: "0x" + actualMaxFee.toString(16),
-  //     maxPriorityFeePerGas: "0x" + actualPriorityFee.toString(16),
-  //     signature: signature,
-  //   };
+  // Sign with EOA
 
-  //   // Send to bundler
-  //   const response = await fetch(BUNDLER_URL, {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       jsonrpc: "2.0",
-  //       id: 1,
-  //       method: "eth_sendUserOperation",
-  //       params: [userOp, ENTRYPOINT_ADDRESS],
-  //     }),
-  //   });
+  const signature = await window.ethereum.request({
+    method: "personal_sign",
+    params: [userOpHash, walletClient.account.address],
+  });
+  console.log(signature);
 
-  //   const result = await response.json();
+  // Build UserOperation
+  const userOp = {
+    sender: CONTRACT_ADDRESS,
+    signature: signature,
+    nonce: "0x" + nonce.toString(16),
+    callData: callData,
+    callGasLimit: "0x70000",
+    verificationGasLimit: "0x20000",
+    preVerificationGas: "0x10000",
+    maxFeePerGas: gasPrices.maxFeePerGas,
+    maxPriorityFeePerGas: gasPrices.maxPriorityFeePerGas,
+  };
 
-  //   if (result.error) {
-  //     throw new Error(`Bundler error: ${result.error.message}`);
-  //   }
+  // Send to bundler
+  const response = await fetch(BUNDLER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "eth_sendUserOperation",
+      params: [userOp, PIMLICO_ENTRYPOINT_ADDRESS],
+    }),
+  });
 
-  //   return result.result;
+  const result = await response.json();
+  console.log(result);
+
+  if (result.error) {
+    throw new Error(`Bundler error: ${result.error.message}`);
+  }
+
+  return result.result;
+}
+
+async function getPimlicoGasPrices() {
+  const response = await fetch(BUNDLER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method: "pimlico_getUserOperationGasPrice",
+      params: [],
+      id: 1,
+    }),
+  });
+  const result = await response.json();
+  const standardGasPrices = result.result.standard;
+  return {
+    maxFeePerGas: standardGasPrices.maxFeePerGas,
+    maxPriorityFeePerGas: standardGasPrices.maxPriorityFeePerGas,
+  };
 }

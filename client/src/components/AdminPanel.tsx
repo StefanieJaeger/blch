@@ -46,7 +46,8 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
   };
 
   const handleCreateTrans = async () => {
-    await executeSmartAccountTransaction();
+    // TODO mp not sure if the args are given in the right format
+    await executeSmartAccountTransaction("vote", [0, 0]);
   };
 
   return (
