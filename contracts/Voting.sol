@@ -30,10 +30,10 @@ contract VotingContract {
     struct VotingInfo {
         uint256 id;
         bytes32[] options;
-        uint winnerOptionIndex;
+        int256 winnerOptionIndex;
         bytes32 topic;
         bool hasEnded;
-        int ownVotedOptionsIndex;
+        int256 ownVotedOptionsIndex;
     }
 
     uint votingsCount;
@@ -116,14 +116,18 @@ contract VotingContract {
      * @return winningOption_ index of winning option in the options array
      */
     function getWinningOption(uint votingIdx) public view
-            returns (uint winningOption_)
+            returns (int256 winningOption_)
     {
         uint winningVoteCount = 0;
+        winningOption_ = -1;
         Voting storage voting = getVoting(votingIdx);
+        if (voting.votingHasEnded) {
+            return winningOption_;
+        }
         for (uint p = 0; p < voting.options.length; p++) {
             if (voting.options[p].voteCount > winningVoteCount) {
                 winningVoteCount = voting.options[p].voteCount;
-                winningOption_ = p;
+                winningOption_ = int256(p);
             }
         }
     }
@@ -156,6 +160,7 @@ contract VotingContract {
 
             info.topic = voting.topic;
             info.hasEnded = voting.votingHasEnded;
+            info.ownVotedOptionsIndex = -1;
 
             for (uint j = 0; j < voting.participants.length; j++) {
                 if (voting.participants[j].adr == msg.sender) {
