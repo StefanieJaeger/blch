@@ -48,6 +48,8 @@ contract VotingContract is IAccount, Ownable {
     uint votingsCount;
     mapping(uint => Voting) votings;
 
+    address lastWriteCaller;
+
     event VotingHasStarted(uint votingIdx, address indexed recipient);
     event VotingHasEnded(uint votingIdx, address indexed recipient);
 
@@ -59,7 +61,7 @@ contract VotingContract is IAccount, Ownable {
      */
     function createVoting(bytes32 topicName, bytes32[] memory optionNames, address[] memory participantAddresses) external {
         Voting storage voting = votings[votingsCount++];
-        voting.admin = tx.origin;
+        voting.admin = lastWriteCaller;
         voting.topic = topicName;
         voting.votedCount = 0;
         voting.votingHasEnded = false;
@@ -92,7 +94,7 @@ contract VotingContract is IAccount, Ownable {
         bool found = false;
 
         for (uint i = 0; i < voting.participants.length; i++) {
-            if (voting.participants[i].adr == tx.origin) {
+            if (voting.participants[i].adr == lastWriteCaller) {
                 Participant storage sender = voting.participants[i];
                 found = true;
 
@@ -119,7 +121,7 @@ contract VotingContract is IAccount, Ownable {
     * @param votingIdx index of voting in the votings array
     */
     function endVotingAsAdmin(uint votingIdx) external {
-        require(tx.origin == getVoting(votingIdx).admin, "Only admin can close the vote");
+        require(lastWriteCaller == getVoting(votingIdx).admin, "Only admin can close the vote");
 
         endVoting(votingIdx);
     }
@@ -178,7 +180,7 @@ contract VotingContract is IAccount, Ownable {
             info.ownVotedOptionIndex = -1;
 
             for (uint j = 0; j < voting.participants.length; j++) {
-                if (voting.participants[j].adr == tx.origin) {
+                if (voting.participants[j].adr == msg.sender) {
                     Participant storage self = voting.participants[j];
                     info.ownVotedOptionIndex = self.votedOptionIdx;
                 }
@@ -188,7 +190,7 @@ contract VotingContract is IAccount, Ownable {
         }
     }
 
-    function getVoting(uint votingIdx) internal view returns (Voting storage voting) {
+    function getVoting(uint votingIdx) private view returns (Voting storage voting) {
         // todo: if not in array, throw?
         return votings[votingIdx];
     }
@@ -212,11 +214,9 @@ contract VotingContract is IAccount, Ownable {
         require(msg.sender == address(entryPoint), "Only EntryPoint");
         // Verify signature
         bytes32 hash = userOpHash.toEthSignedMessageHash();
-        address signer = hash.recover(userOp.signature); //sig is just bytes, you can multisig here
+        address signer = hash.recover(userOp.signature);
 
-        if (signer != owner()) {
-            return 1; // Invalid signature
-        }
+        require(signer == owner(), "unauthorized");
 
         // Validate and increment nonce
         require(nonce++ == userOp.nonce, "Invalid nonce");
@@ -227,6 +227,7 @@ contract VotingContract is IAccount, Ownable {
             require(success, "Failed to pay EntryPoint");
         }
 
+        lastWriteCaller = signer;
         return 0; // Signature valid
     }
 

@@ -12,7 +12,7 @@ import abi from "./voting-smart-abi.json";
 const PIMLICO_ENTRYPOINT_ADDRESS = "0x0000000071727De22E5E9d8BAf0edAc6f37da032";
 const BUNDLER_URL = `https://public.pimlico.io/v2/${sepolia.id}/rpc`;
 
-const CONTRACT_ADDRESS = "0x4DCe19e5E2a70663cb0464BC092fCBDa67bD21c5";
+const CONTRACT_ADDRESS = "0xc36ab91320CD82841eb58a18Ef8a4b390b0D2430";
 
 async function getWalletClient() {
   const accounts = await window.ethereum.request({
@@ -35,18 +35,7 @@ export async function executeSmartAccountTransaction(
   });
   const walletClient = await getWalletClient();
 
-  // Check balance
-  // const balance = await wallet.getBalance(smartAccountAddress);
-  // const balanceInWei = BigInt(balance);
-  // if (balanceInWei === 0n) {
-  //     throw new Error(`Smart account ${smartAccountAddress} has no funds`);
-  // }
-
   // Get nonce
-  const nonceData = encodeFunctionData({
-    abi: abi,
-    functionName: "nonce",
-  });
   const nonceResult = await publicClient.readContract({
     address: CONTRACT_ADDRESS,
     abi,
@@ -94,9 +83,8 @@ export async function executeSmartAccountTransaction(
     userOperation: {
       // TODO mp unsure if the address is the correct one
       sender: CONTRACT_ADDRESS,
-      // TODO mp this is incorrect!!!!!!
-      signature: "0x",
-      nonce: BigInt(nonce),
+      signature: "0x", // Dummy signature to make viem types happy.
+      nonce: nonce,
       callData: callData,
       callGasLimit: BigInt("0x70000"),
       verificationGasLimit: BigInt("0x20000"),

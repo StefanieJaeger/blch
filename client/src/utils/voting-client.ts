@@ -4,6 +4,7 @@ import { sepolia } from "viem/chains";
 import { Voting } from "../types/Voting";
 import abi from "./voting-abi.json";
 import { User } from "../types/User";
+import { executeSmartAccountTransaction } from "./voting-smart-client";
 
 if (!window.ethereum) throw new Error("MetaMask not found");
 export const votingClient = createPublicClient({
@@ -22,28 +23,30 @@ export async function getWalletClient() {
   });
 }
 
-const CONTRACT_ADDRESS = "0x4DCe19e5E2a70663cb0464BC092fCBDa67bD21c5";
+const CONTRACT_ADDRESS = "0xc36ab91320CD82841eb58a18Ef8a4b390b0D2430";
 
 export async function createNewVoting(
   topicName: string,
   optionNames: string[],
   participantAddresses: string[]
 ) {
-  const walletClient = await getWalletClient();
+  // const walletClient = await getWalletClient();
   const encodedOptions = optionNames.map((opt) =>
     encodeBytes32String(opt.trim())
   );
-  await walletClient.writeContract({
-    address: CONTRACT_ADDRESS,
-    chain: sepolia,
-    abi,
-    functionName: "createVoting",
-    args: [
-      encodeBytes32String(topicName),
-      encodedOptions,
-      participantAddresses,
-    ],
-  });
+  const args = [
+    encodeBytes32String(topicName),
+    encodedOptions,
+    participantAddresses,
+  ];
+  await executeSmartAccountTransaction("createVoting", args);
+  // await walletClient.writeContract({
+  //   address: CONTRACT_ADDRESS,
+  //   chain: sepolia,
+  //   abi,
+  //   functionName: "createVoting",
+
+  // });
 }
 
 export async function loadVotings(user: User): Promise<Voting[]> {
