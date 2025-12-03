@@ -1,0 +1,22 @@
+.admin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  .create-voting-form {
+    h2 {
+      margin-bottom: 1rem;
+    }
+    .form-data {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      .input-group {
+        display: flex;
+        gap: 1rem;
+        input {
+          flex-grow: 1;
+        }
+      }
+    }
+  }
+}

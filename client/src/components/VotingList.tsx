@@ -15,12 +15,18 @@ type VotingListProps = {
   refreshKey: number;
 };
 
-const VotingList = ({ user, refreshKey }: VotingListProps) => {
+const VotingList = ({ user }: VotingListProps) => {
   const [votings, setVotings] = useState<Voting[]>([]);
 
+  // TODO better than how it was before but still seems buggy
   useEffect(() => {
-    setTimeout(() => loadData(), 25000);
-  }, [refreshKey]);
+    loadData();
+    const id = setInterval(() => {
+      loadData();
+    }, 10000);
+    return () => clearInterval(id);
+  }, []);
+
   const loadData = async () => {
     try {
       const votings = await loadVotings(user);
@@ -43,14 +49,10 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   return (
-    // TODO: add sick stylings
     <section className="votings">
-      <button onClick={loadData}>Load</button>
+      <h2>Votings</h2>
+      <button onClick={loadData}>&#128472; refresh votings</button>
       <div className="votings--active">
         <h3>Open Votings</h3>
         <div className="voting-list">
@@ -59,11 +61,17 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
             .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>{voting.topic}</p>
+                {!voting.isParticipant && (
+                  <p className="info">
+                    You are not a participant and therefore can't vote.
+                  </p>
+                )}
                 {voting.ownVotedOptionIndex === -1 ? (
                   voting.options.map((option, idO) => (
                     <button
                       key={idO}
                       onClick={() => handleVote(voting.id, idO)}
+                      disabled={!voting.isParticipant}
                     >
                       {option}
                     </button>
@@ -80,7 +88,7 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
             ))}
         </div>
       </div>
-      <div className="votings--ended">
+      <div className="votings--closed">
         <h3>Closed Votings</h3>
         <div className="voting-list">
           {votings
@@ -88,6 +96,9 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
             .map((voting) => (
               <div className="voting-card" key={voting.id}>
                 <p>Enquiry: {voting.topic}</p>
+                {!voting.isParticipant && (
+                  <p className="info">You were not a participant.</p>
+                )}
                 Options:
                 <br />
                 <ol>
@@ -96,6 +107,9 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
                     return (
                       <li key={idO} className={`${hasWon ? "li--bold" : ""}`}>
                         {hasWon ? <>WINNER: {option}</> : <>{option}</>}
+                        {voting.ownVotedOptionIndex === idO && (
+                          <span> (your vote)</span>
+                        )}
                       </li>
                     );
                   })}
