@@ -43,6 +43,7 @@ contract VotingContract is IAccount, Ownable {
         bytes32 topic;
         bool hasEnded;
         int256 ownVotedOptionIndex;
+        bool isParticipant;
     }
 
     uint votingsCount;
@@ -178,9 +179,11 @@ contract VotingContract is IAccount, Ownable {
             info.topic = voting.topic;
             info.hasEnded = voting.votingHasEnded;
             info.ownVotedOptionIndex = -1;
+            info.isParticipant = false;
 
             for (uint j = 0; j < voting.participants.length; j++) {
                 if (voting.participants[j].adr == msg.sender) {
+                    info.isParticipant = true;
                     Participant storage self = voting.participants[j];
                     info.ownVotedOptionIndex = self.votedOptionIdx;
                 }

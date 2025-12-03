@@ -23,6 +23,11 @@
   border-radius: 1rem;
   background: lavender;
   box-sizing: border-box;
+  .info {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: gray;
+  }
 }
 
 .li--bold {

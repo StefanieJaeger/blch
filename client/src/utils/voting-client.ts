@@ -1,6 +1,7 @@
 import { decodeBytes32String, encodeBytes32String } from "ethers";
 import { Address, createPublicClient, custom } from "viem";
 import { sepolia } from "viem/chains";
+import { User } from "../types/User";
 import { Voting } from "../types/Voting";
 import abi from "./voting-abi.json";
 import { User } from "../types/User";
@@ -49,6 +50,7 @@ export async function loadVotings(user: User): Promise<Voting[]> {
         hasEnded: d.hasEnded,
         ownVotedOptionIndex: Number(d.ownVotedOptionIndex),
         id: Number(d.id),
+        isParticipant: d.isParticipant,
       } as Voting)
   );
 
