@@ -50,9 +50,9 @@ const VotingList = ({ user }: VotingListProps) => {
   };
 
   return (
-    // TODO: add sick stylings
     <section className="votings">
-      <button onClick={loadData}>Load</button>
+      <h2>Votings</h2>
+      <button onClick={loadData}>&#128472; refresh votings</button>
       <div className="votings--active">
         <h3>Open Votings</h3>
         <div className="voting-list">
@@ -79,7 +79,7 @@ const VotingList = ({ user }: VotingListProps) => {
             ))}
         </div>
       </div>
-      <div className="votings--ended">
+      <div className="votings--closed">
         <h3>Closed Votings</h3>
         <div className="voting-list">
           {votings

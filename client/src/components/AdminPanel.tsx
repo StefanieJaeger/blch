@@ -2,6 +2,7 @@ import { useState } from "react";
 import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
+import "./admin-panel.css";
 import { executeSmartAccountTransaction } from "../utils/account-abstraction";
 
 declare global {
@@ -46,18 +47,28 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
   };
 
   return (
-    <div>
-      <h2>Admin Panel</h2>
+    <div className="admin-panel">
+      <h1>Voting App Admin Panel</h1>
       <p>You are logged in as admin.</p>
       <p>Your wallet address: {user.address}</p>
-      <form onSubmit={handleCreateVoting}>
-        <h3>Create New Voting</h3>
-        <label htmlFor="topic">Topic:</label>
-        <input type="text" id="topic" name="topic" required />
-        <label htmlFor="options">Options (comma separated):</label>
-        <input type="text" id="options" name="options" required />
-        <label htmlFor="participants">Participants (comma separated):</label>
-        <input type="text" id="participants" name="participants" required />
+      <form onSubmit={handleCreateVoting} className="create-voting-form">
+        <h2>Create New Voting</h2>
+        <div className="form-data">
+          <div className="input-group">
+            <label htmlFor="topic">Topic:</label>
+            <input type="text" id="topic" name="topic" required />
+          </div>
+          <div className="input-group">
+            <label htmlFor="options">Options (comma separated):</label>
+            <input type="text" id="options" name="options" required />
+          </div>
+          <div className="input-group">
+            <label htmlFor="participants">
+              Participants (comma separated):
+            </label>
+            <input type="text" id="participants" name="participants" required />
+          </div>
+        </div>
         <button type="submit">Create Voting</button>
       </form>
       <VotingList user={user} refreshKey={votingRefreshKey} />

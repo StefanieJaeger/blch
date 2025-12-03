@@ -90,27 +90,25 @@ div#root {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-
     gap: 1rem;
-
-    section {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
   }
 }
 
-
 header {
   padding: 1rem 3rem;
-  background: #F3F5F8;
+  background: #f3f5f8;
   display: flex;
   justify-content: space-between;
 }
 
 footer {
   padding: 1rem 3rem;
-  background: #F3F5F8;
+  background: #f3f5f8;
   text-align: center;
+}
+
+button {
+  &:hover {
+    cursor: pointer;
+  }
 }
