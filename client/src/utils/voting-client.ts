@@ -4,7 +4,6 @@ import { sepolia } from "viem/chains";
 import { User } from "../types/User";
 import { Voting } from "../types/Voting";
 import abi from "./voting-abi.json";
-import { User } from "../types/User";
 import { executeSmartAccountTransaction } from "./account-abstraction";
 
 if (!window.ethereum) throw new Error("MetaMask not found");
