@@ -3,6 +3,7 @@ import { User } from "../types/User";
 import { createNewVoting } from "../utils/voting-client";
 import VotingList from "./VotingList";
 import "./admin-panel.css";
+import { executeSmartAccountTransaction } from "../utils/account-abstraction";
 
 declare global {
   interface Window {

@@ -15,12 +15,18 @@ type VotingListProps = {
   refreshKey: number;
 };
 
-const VotingList = ({ user, refreshKey }: VotingListProps) => {
+const VotingList = ({ user }: VotingListProps) => {
   const [votings, setVotings] = useState<Voting[]>([]);
 
+  // TODO better than how it was before but still seems buggy
   useEffect(() => {
-    setTimeout(() => loadData(), 25000);
-  }, [refreshKey]);
+    loadData();
+    const id = setInterval(() => {
+      loadData();
+    }, 10000);
+    return () => clearInterval(id);
+  }, []);
+
   const loadData = async () => {
     try {
       const votings = await loadVotings(user);
@@ -42,10 +48,6 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
       alert("Voting failed: " + (err as Error).message);
     }
   };
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   return (
     <section className="votings">
