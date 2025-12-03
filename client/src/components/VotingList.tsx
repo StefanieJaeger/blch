@@ -15,12 +15,18 @@ type VotingListProps = {
   refreshKey: number;
 };
 
-const VotingList = ({ user, refreshKey }: VotingListProps) => {
+const VotingList = ({ user }: VotingListProps) => {
   const [votings, setVotings] = useState<Voting[]>([]);
 
+  // TODO better than how it was before but still seems buggy
   useEffect(() => {
-    setTimeout(() => loadData(), 25000);
-  }, [refreshKey]);
+    loadData();
+    const id = setInterval(() => {
+      loadData();
+    }, 10000);
+    return () => clearInterval(id);
+  }, []);
+
   const loadData = async () => {
     try {
       const votings = await loadVotings(user);
@@ -43,10 +49,6 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   return (
     <section className="votings">
       <h2>Votings</h2>
@@ -61,10 +63,7 @@ const VotingList = ({ user, refreshKey }: VotingListProps) => {
                 <p>{voting.topic}</p>
                 {voting.ownVotedOptionIndex === -1 ? (
                   voting.options.map((option, idO) => (
-                    <button
-                      key={idO}
-                      onClick={() => handleVote(voting.id, idO)}
-                    >
+                    <button onClick={() => handleVote(voting.id, idO)}>
                       {option}
                     </button>
                   ))
