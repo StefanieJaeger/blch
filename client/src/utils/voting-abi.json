@@ -267,61 +267,6 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"internalType": "bytes32",
-				"name": "topicName",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "bytes32[]",
-				"name": "optionNames",
-				"type": "bytes32[]"
-			},
-			{
-				"internalType": "address[]",
-				"name": "participantAddresses",
-				"type": "address[]"
-			}
-		],
-		"name": "createVoting",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "votingIdx",
-				"type": "uint256"
-			}
-		],
-		"name": "endVotingAsAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "votingIdx",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "optionIdx",
-				"type": "uint256"
-			}
-		],
-		"name": "vote",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
 				"indexed": false,
 				"internalType": "uint256",
 				"name": "votingIdx",
@@ -355,6 +300,10 @@
 		],
 		"name": "VotingHasStarted",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address payable",
 				"name": "to",
 				"type": "address"

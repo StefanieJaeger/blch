@@ -4,7 +4,6 @@ import { sepolia } from "viem/chains";
 import { User } from "../types/User";
 import { Voting } from "../types/Voting";
 import abi from "./voting-abi.json";
-import { User } from "../types/User";
 import { executeSmartAccountTransaction } from "./account-abstraction";
 
 if (!window.ethereum) throw new Error("MetaMask not found");
@@ -13,7 +12,7 @@ export const votingClient = createPublicClient({
   transport: custom(window.ethereum),
 });
 
-const CONTRACT_ADDRESS = "0xc36ab91320CD82841eb58a18Ef8a4b390b0D2430";
+const CONTRACT_ADDRESS = "0x32CD6cdfC25bB6E3b49E3a70DFa27f3D158e5d09";
 
 export async function createNewVoting(
   topicName: string,

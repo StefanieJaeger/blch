@@ -18,7 +18,6 @@ type VotingListProps = {
 const VotingList = ({ user }: VotingListProps) => {
   const [votings, setVotings] = useState<Voting[]>([]);
 
-  // TODO better than how it was before but still seems buggy
   useEffect(() => {
     loadData();
     const id = setInterval(() => {

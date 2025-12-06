@@ -201,7 +201,6 @@ contract VotingContract is IAccount, Ownable {
     // ---
     // Functions for Account abstraction:
     // ---
-    // TODO we maybe need to make the other functions to make the vote internal or similar?
     using ECDSA for bytes32;
     using MessageHashUtils for bytes32;
 
@@ -218,8 +217,6 @@ contract VotingContract is IAccount, Ownable {
         // Verify signature
         bytes32 hash = userOpHash.toEthSignedMessageHash();
         address signer = hash.recover(userOp.signature);
-
-        require(signer == owner(), "unauthorized");
 
         // Validate and increment nonce
         require(nonce++ == userOp.nonce, "Invalid nonce");

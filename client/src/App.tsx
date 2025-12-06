@@ -1,20 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
-import VoterPanel from './components/VoterPanel';
 import { User } from './types/User';
 
+function load(key: string): User | null {
+  const item = window.sessionStorage.getItem(key);
+  return item != null ? JSON.parse(item) : null;
+}
+
 function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => load('blch-user'));
+
+  useEffect(() => {
+    window.sessionStorage.setItem('blch-user', JSON.stringify(user));
+  }, [user]);
 
   let content;
   if (!user) {
     content = <Login onLogin={setUser} />;
-  } else if (user.role === "admin") {
-    content = <AdminPanel user={user} />;
   } else {
-    content = <VoterPanel user={user} />;
+    content = <AdminPanel user={user} />;
   }
 
   return (
