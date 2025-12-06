@@ -200,8 +200,7 @@ contract VotingContract is IAccount, Ownable {
 
     // ---
     // Functions for Account abstraction:
-    // ---
-    // TODO we maybe need to make the other functions to make the vote internal or similar?
+    // ---g
     using ECDSA for bytes32;
     using MessageHashUtils for bytes32;
 
