@@ -12,7 +12,7 @@ export const votingClient = createPublicClient({
   transport: custom(window.ethereum),
 });
 
-const CONTRACT_ADDRESS = "0x0D58b00b4eA6c797958874714e7Ce07a523681D3";
+const CONTRACT_ADDRESS = "0x32CD6cdfC25bB6E3b49E3a70DFa27f3D158e5d09";
 
 export async function createNewVoting(
   topicName: string,
