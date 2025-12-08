@@ -42,6 +42,7 @@ const VotingList = ({ user }: VotingListProps) => {
       }
       await vote(votingIdx, optionIdx);
       loadData();
+      alert("Your vote has been cast! Processing can take a while. Please click reload button in a couple of seconds or go get a snack and do it then :)")
     } catch (err) {
       alert("Voting failed: " + (err as Error).message);
     }
@@ -50,7 +51,7 @@ const VotingList = ({ user }: VotingListProps) => {
   return (
     <section className="votings">
       <h2>Votings</h2>
-      <button onClick={loadData}>&#128472; refresh votings</button>
+      <button onClick={loadData}>🔄 Refresh Votings</button>
       <div className="votings--active">
         <h3>Open Votings</h3>
         <div className="voting-list">
