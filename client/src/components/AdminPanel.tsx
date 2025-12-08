@@ -28,7 +28,6 @@ const AdminPanel = ({ user }: AdminPanelProps) => {
     const participants = (formData.get("participants") as string)
       .split(",")
       .map((part) => part.trim());
-    console.log("Creating voting:", { topic, options, participants });
     try {
       if (window.ethereum) {
         await window.ethereum.request({ method: "eth_requestAccounts" });

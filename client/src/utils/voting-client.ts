@@ -38,8 +38,6 @@ export async function loadVotings(user: User): Promise<Voting[]> {
     account: <Address>user.address,
   });
 
-  console.log("data", data);
-
   const votings = (data as any[]).map(
     (d) =>
       ({

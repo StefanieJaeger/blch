@@ -41,7 +41,6 @@ export async function executeSmartAccountTransaction(
     functionName: "nonce",
   });
   const nonce = BigInt(nonceResult as number);
-  console.log(nonce);
 
   // Build call data
   const targetCallData = encodeFunctionData({
@@ -107,7 +106,6 @@ export async function executeSmartAccountTransaction(
   });
 
   const result = await response.json();
-  console.log(result);
   if (result.error) {
     throw new Error(`Bundler error: ${result.error.message}`);
   }
