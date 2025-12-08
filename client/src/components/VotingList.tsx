@@ -29,7 +29,6 @@ const VotingList = ({ user }: VotingListProps) => {
   const loadData = async () => {
     try {
       const votings = await loadVotings(user);
-      console.log("votings", votings);
       setVotings(votings);
     } catch (err) {
       console.error(err);
